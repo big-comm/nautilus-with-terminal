@@ -1,72 +1,126 @@
-# Maintainer: Tales A. Mendonça <talesam@gmail.com>
+# Original package from ArchLinux
+# Maintainer: Fabian Bornschein <fabiscafe@archlinux.org>
+# Maintainer: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
+# Contributor: Jan de Groot <jgc@archlinux.org>
 
-pkgname=pkgbuild-template
-pkgdesc="Package template for Communitybig"
-# Uncomment and edit the following lines as needed
-#depends=('')
-#makedepends=('')
-#optdepends=('')
-#conflicts=('')
-#provides=('')
-#replaces=('')
-pkgver=$(date +%y.%m.%d)
-pkgrel=$(date +%H%M)
-arch=('any')
-license=('MIT')
-url="https://github.com/big-comm/${pkgname}"
-source=("git+${url}.git")
-md5sums=('SKIP')
+# This version modified to add embedded terminal support
+# Maintainer: Bruno Goncalves <biglinux.com.br>
+# Maintainer: Tales A. Mendonça <communitybig.org>
 
-# Automatically detect and use the correct install file
-if [ -e "${pkgname}.install" ]; then
-    install=${pkgname}.install
-elif [ -e "pkgbuild.install" ]; then
-    install=pkgbuild.install
-fi
+pkgbase=nautilus-with-terminal
+pkgname=nautilus-with-terminal
+pkgver=49.1
+pkgrel=1
+conflicts=('nautilus')
+provides=('nautilus')
+replaces=('nautilus')
+pkgdesc="Default file manager for GNOME - with embedded terminal support"
+url="https://apps.gnome.org/Nautilus/"
+arch=(x86_64)
+license=(GPL-3.0-or-later)
+depends=(
+  cairo
+  dconf
+  gcc-libs
+  gdk-pixbuf2
+  glib2
+  glibc
+  gnome-autoar
+  gnome-desktop-4
+  graphene
+  gst-plugins-base-libs
+  gstreamer
+  gtk4
+  gvfs
+  hicolor-icon-theme
+  libadwaita
+  libcloudproviders
+  libgexiv2
+  libportal
+  libportal-gtk4
+  libx11
+  localsearch
+  pango
+  vte4
+  tinysparql
+  wayland
+  xdg-user-dirs-gtk
+)
+makedepends=(
+  appstream
+  vte4
+  gi-docgen
+  git
+  glib2-devel
+  gobject-introspection
+  meson
+)
+checkdepends=(python-gobject)
+source=(
+  "git+https://gitlab.gnome.org/talesam/nautilus.git#branch=main"
+)
+b2sums=('SKIP')
 
 prepare() {
-    cd "${srcdir}/${pkgname}"
-    # Add any preparation steps here, if needed
-    # For example: patch -p1 < "${srcdir}/patch-file.patch"
+  cd nautilus
 }
 
 build() {
-    cd "${srcdir}/${pkgname}"
-    # Add build steps here, if needed
-    # For example: make
+  local meson_options=(
+    -D docs=true
+    -D packagekit=false
+  )
+
+  arch-meson nautilus build "${meson_options[@]}"
+  meson compile -C build
 }
 
-check() {
-    cd "${srcdir}/${pkgname}"
-    # Add check/test steps here, if needed
-    # For example: make check
+# check() {
+#   meson test -C build --print-errorlogs
+# }
+
+_pick() {
+  local p="$1" f d; shift
+  for f; do
+    d="$srcdir/$p/${f#$pkgdir/}"
+    mkdir -p "$(dirname "$d")"
+    mv "$f" "$d"
+    rmdir -p --ignore-fail-on-non-empty "$(dirname "$f")"
+  done
 }
 
-package() {
-    cd "${srcdir}/${pkgname}"
+package_nautilus-with-terminal() {
+  depends+=(libnautilus-extension.so)
+  groups=(gnome)
 
-    # Determine the correct source directory
-    if [ -d "${pkgname}" ]; then
-        srcdir="${srcdir}/${pkgname}/${pkgname}"
-    else
-        srcdir="${srcdir}/${pkgname}"
-    fi
+  meson install -C build --destdir "$pkgdir"
 
-    # Install files
-    local dirs=("usr" "etc" "opt")
-    for dir in "${dirs[@]}"; do
-        if [ -d "${srcdir}/${dir}" ]; then
-            cp -a "${srcdir}/${dir}" "${pkgdir}/"
-        fi
-    done
+  cd "$pkgdir"
 
-    # Install license file if present
-    if [ -f "LICENSE" ]; then
-        install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
-    fi
+  _pick libne usr/include
+  _pick libne usr/lib/{girepository-1.0,libnautilus-extension*,pkgconfig}
+  _pick libne usr/share/gir-1.0
 
-    # Install documentation if present
-    if [ -f "README.md" ]; then
-        install -Dm644 README.md "${pkgdir}/usr/share/doc/${pkgname}/README.md"
-    fi
+  _pick ldocs usr/share/doc
 }
+
+package_libnautilus-extension() {
+  pkgdesc="Extension interface for Nautilus"
+  depends=(
+    gcc-libs
+    glib2
+    glibc
+  )
+  provides=(libnautilus-extension.so)
+
+  mv libne/* "$pkgdir"
+}
+
+package_libnautilus-extension-docs() {
+  pkgdesc="Extension interface for Nautilus (documentation)"
+  depends=()
+
+  mv ldocs/* "$pkgdir"
+}
+
+# vim:set sw=2 sts=-1 et:
