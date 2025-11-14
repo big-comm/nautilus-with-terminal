@@ -33,6 +33,7 @@ depends=(
   gtk4
   gvfs
   hicolor-icon-theme
+  icu
   libadwaita
   libcloudproviders
   libgexiv2
