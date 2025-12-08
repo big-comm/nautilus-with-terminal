@@ -9,8 +9,8 @@
 
 pkgbase=nautilus-with-terminal
 pkgname=nautilus-with-terminal
-pkgver=49.1
-pkgrel=3
+pkgver=49.2
+pkgrel=1
 conflicts=('nautilus')
 provides=('nautilus')
 replaces=('nautilus')
