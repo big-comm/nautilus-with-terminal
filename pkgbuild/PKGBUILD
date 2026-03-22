@@ -10,7 +10,7 @@
 pkgbase=nautilus-with-terminal
 pkgname=nautilus-with-terminal
 pkgver=49.4
-pkgrel=2
+pkgrel=3
 conflicts=('nautilus')
 provides=('nautilus')
 replaces=('nautilus')
@@ -64,6 +64,13 @@ b2sums=('SKIP')
 
 prepare() {
   cd nautilus
+
+  # Fix: content_view is appended to content_box (not vbox) in
+  # create_and_bind_new_content_view(), but dispose() incorrectly
+  # removes it from vbox, triggering on every window/tab close:
+  #   gtk_box_remove: assertion 'gtk_widget_get_parent (child) == (GtkWidget *)box' failed
+  sed -i 's/gtk_box_remove (GTK_BOX (self->vbox), GTK_WIDGET (self->content_view))/gtk_box_remove (GTK_BOX (self->content_box), GTK_WIDGET (self->content_view))/' \
+    src/nautilus-window-slot.c
 }
 
 build() {
