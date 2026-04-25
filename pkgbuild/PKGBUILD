@@ -73,6 +73,7 @@ build() {
   local meson_options=(
     -D docs=true
     -D packagekit=false
+    -D selinux=disabled
   )
 
   # --wrap-mode=default overrides arch-meson's --wrap-mode=nodownload so that
