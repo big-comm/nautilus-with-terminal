@@ -75,7 +75,10 @@ build() {
     -D packagekit=false
   )
 
-  arch-meson nautilus build "${meson_options[@]}"
+  # --wrap-mode=default overrides arch-meson's --wrap-mode=nodownload so that
+  # blueprint-compiler can be pulled as a subproject when the chroot ships an
+  # older version than Nautilus 50 requires (>= 0.19.0).
+  arch-meson nautilus build "${meson_options[@]}" --wrap-mode=default
   meson compile -C build
 }
 
