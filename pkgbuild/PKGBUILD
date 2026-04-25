@@ -9,8 +9,8 @@
 
 pkgbase=nautilus-with-terminal
 pkgname=nautilus-with-terminal
-pkgver=49.4
-pkgrel=2
+pkgver=50.1
+pkgrel=1
 conflicts=('nautilus')
 provides=('nautilus')
 replaces=('nautilus')
@@ -25,6 +25,8 @@ depends=(
   gdk-pixbuf2
   glib2
   glibc
+  glycin
+  glycin-gtk4
   gnome-autoar
   gnome-desktop-4
   graphene
@@ -49,6 +51,7 @@ depends=(
 )
 makedepends=(
   appstream
+  blueprint-compiler
   vte4
   gi-docgen
   git
