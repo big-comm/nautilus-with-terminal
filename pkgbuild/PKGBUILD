@@ -9,12 +9,12 @@
 
 pkgbase=nautilus-with-terminal
 pkgname=nautilus-with-terminal
-pkgver=50.1
-pkgrel=2
+pkgdesc="Default file manager for GNOME - with embedded terminal support"
+pkgver=50.2
+pkgrel=1
 conflicts=('nautilus')
 provides=('nautilus')
 replaces=('nautilus')
-pkgdesc="Default file manager for GNOME - with embedded terminal support"
 url="https://apps.gnome.org/Nautilus/"
 arch=(x86_64)
 license=(GPL-3.0-or-later)
