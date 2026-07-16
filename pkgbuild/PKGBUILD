@@ -10,7 +10,7 @@
 pkgbase=nautilus-with-terminal
 pkgname=nautilus-with-terminal
 pkgdesc="Default file manager for GNOME - with embedded terminal support"
-pkgver=50.2.2
+pkgver=50.2.3
 pkgrel=1
 conflicts=('nautilus')
 provides=('nautilus')
