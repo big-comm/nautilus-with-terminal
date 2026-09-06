@@ -10,7 +10,7 @@
 pkgbase=nautilus-with-terminal
 pkgname=nautilus-with-terminal
 pkgdesc="Default file manager for GNOME - with embedded terminal support"
-pkgver=50.2.3
+pkgver=50.3.1
 pkgrel=1
 conflicts=('nautilus')
 provides=('nautilus')
@@ -18,12 +18,12 @@ replaces=('nautilus')
 url="https://apps.gnome.org/Nautilus/"
 arch=(x86_64)
 license=(GPL-3.0-or-later)
-# Diagnóstico de crashes: compila com -g e gera o pacote separado
-# nautilus-with-terminal-debug, para que o backtrace aponte a função exata em
-# vez de "#9 ??? ()". O pacote principal segue stripped e do mesmo tamanho; os
-# símbolos ficam no pacote -debug, instalado só em quem for depurar.
-# Remover quando a investigação do SIGSEGV em closure_invoke_notifiers encerrar.
-options=(debug)
+# Nota: não habilitar options=(debug) aqui. O pipeline resolve o artefato com
+#   find . -iname "$pkgname*.pkg.tar.zst"
+# e o nome nautilus-with-terminal-debug casa com esse mesmo padrão, então a
+# variável full_pkgname vira multilinha, a escrita em $GITHUB_ENV é recusada e
+# o job falha depois de já ter construído os pacotes. Para depurar, construa
+# localmente com options=(debug) em uma cópia deste PKGBUILD.
 depends=(
   cairo
   dconf
